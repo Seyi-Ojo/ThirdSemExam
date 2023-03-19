@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: hdk-pro
+   labels:
+     name: hdk-pro
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: webserver
+   namespace: hdk-pro
+   labels:
+     app: webserver
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+       app: webserver
+  template:
+    metadata:
+       name: hdk-pro
+       labels:
+           app: webserver
+    spec:
+       containers:
+          - name: hdk-pro
+            image: thecloudfairy/hdk-proj
+            securityContext:
+              privileged: true
+            ports:
+              - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service 
+metadata:
+   name: hdk-proj-service
+   namespace: hdk-pro
+spec:
+  type: LoadBalancer
+  selector:
+    app: webserver
+  ports:
+    - port: 80
+      targetPort: 80
